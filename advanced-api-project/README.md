@@ -1,67 +1,74 @@
-# Book & Author API
+# Advanced API Project
 
-This project is a Django-based REST API to manage books and authors. The API provides endpoints for creating, retrieving, updating, and deleting books, as well as retrieving authors and their related books.
+This project is a Django REST Framework API for managing a collection of books and authors. It includes features like token-based authentication, filtering, searching, and ordering.
 
-## Features:
-- **Token Authentication**: Users must authenticate using a token for any actions requiring modification (POST, PUT, DELETE).
-- **Permissions**:
-  - Unauthenticated users can read data.
-  - Authenticated users can create, update, and delete books.
-  - Admins have full access.
+## Features
 
-## Models:
-1. **Author**: 
-    - Fields: `name`
-    - Relationships: One-to-many with the `Book` model.
-2. **Book**: 
-    - Fields: `title`, `author` (ForeignKey), `publication_year`
-    - Validation: The publication year must not be in the future.
+*   **Book and Author API Endpoints**: Provides full CRUD (Create, Read, Update, Delete) functionality for books and authors.
+*   **Token Authentication**: Secures the API using `djangorestframework.authtoken`.
+*   **Filtering**: Allows filtering books by `publication_year` and `author__name`.
+*   **Searching**: Enables searching for books by `title` and `author__name`.
+*   **Ordering**: Supports ordering books by `title` and `publication_year`.
+*   **Serialization**: Uses `ModelSerializer` to handle the conversion of `Book` and `Author` models to and from JSON.
+*   **Nested Serialization**: The `Author` serializer includes a list of books written by the author.
 
-## Serializers:
-- **AuthorSerializer**: 
-    - Nested serialization of books associated with the author.
-- **BookSerializer**: 
-    - Handles custom validation for publication year.
+## Getting Started
 
-## Views:
-- **ListView**: 
-    - Retrieves all books with filtering, searching, and ordering capabilities.
-    - **Filter**: Only books authored by the currently authenticated user.
-    - **Search**: Search by `title` and `author`.
-    - **Order**: Order by `title` or `publication_year`. Default is `title`.
-- **CreateView**: 
-    - Allows authenticated users to create new books with validation for publication year.
-- **DetailView**: 
-    - Retrieves a specific book by its ID.
-- **UpdateView**: 
-    - Allows updating an existing book with validation for publication year.
-- **DeleteView**: 
-    - Allows deletion of a book by its ID.
-## Permissions:
-- `IsAuthenticatedOrReadOnly`: Allows unauthenticated users to read data, while authenticated users can modify it.
-- `IsAuthenticated`: Allows only authenticated users to modify data.
+To run this project, you need to have Python, Django, and Django REST Framework installed.
 
-## Token Authentication:
-1. Obtain a token by sending a POST request with username and password to `/api/token/`.
-2. Include the token in the `Authorization` header of any request requiring authentication.
-   - Example:
-     ```
-     Authorization: Token your_token_here
-     ```
+1.  **Clone the repository or download the project files.**
 
-## Endpoints:
-- **POST** `api/authors/`: Create a new author.
-- **GET** `api/authors/`: Retrieve all authors.
-- **GET** `api/books/`: Retrieve all books.
-- **POST** `api/books/create/`: Create a new book (authenticated).
-- **GET** `api/books/<id>/`: Retrieve a specific book.
-- **PUT** `api/books/update/<id>/`: Update a book (authenticated).
-- **DELETE** `api/books/delete/<id>/`: Delete a book (authenticated).
+2.  **Navigate to the project directory:**
+    ```bash
+    cd advanced-api-project
+    ```
 
-## Setup:
-1. Clone the repository.
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run migrations: `python manage.py migrate`
-4. Create a superuser: `python manage.py createsuperuser`
-5. Run the server: `python manage.py runserver`
-6. Access the API through Postman or any HTTP client.
+3.  **Install the dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Apply the database migrations:**
+    ```bash
+    python manage.py migrate
+    ```
+
+5.  **Create a superuser:**
+    ```bash
+    python manage.py createsuperuser
+    ```
+
+6.  **Run the development server:**
+    ```bash
+    python manage.py runserver
+    ```
+
+## API Endpoints
+
+The following API endpoints are available:
+
+*   `POST /api/token/`: Obtain an authentication token by providing a username and password.
+*   `GET /api/books/`: Get a list of all books.
+*   `POST /api/books/create`: Create a new book (requires authentication).
+*   `GET /api/books/<int:pk>/`: Retrieve a specific book by its ID.
+*   `PUT /api/books/update/<int:pk>/`: Update a book (requires authentication).
+*   `DELETE /api/books/delete/<int:pk>/`: Delete a book (requires authentication).
+*   `GET /api/authors/`: Get a list of all authors and their books.
+*   `POST /api/authors/`: Create a new author (requires authentication).
+
+### Example Usage
+
+1.  **Get an authentication token:**
+    ```bash
+    curl -X POST http://127.0.0.1:8000/api/token/ -d "username=your_username&password=your_password"
+    ```
+
+2.  **Create a new book:**
+    ```bash
+    curl -X POST http://127.0.0.1:8000/api/books/create -H "Authorization: Token YOUR_TOKEN_HERE" -d "title=New Book&author=1&publication_year=2023"
+    ```
+
+3.  **List all books:**
+    ```bash
+    curl http://127.0.0.1:8000/api/books/
+    ```
